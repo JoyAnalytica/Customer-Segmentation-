@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Segmentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <circle cx="8" cy="21" r="3.2" fill="currentColor" opacity="0.35" />
+            <circle cx="15" cy="10" r="3.2" fill="currentColor" opacity="0.65" />
+            <circle cx="22" cy="17" r="3.2" fill="currentColor" />
+          </svg>
+        </span>
+        <div class="brand-text">
+          <h1>Customer Segmentation</h1>
+          <p>AI-powered customer segmentation dashboard</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel" aria-labelledby="form-heading">
+        <h2 id="form-heading">Customer data</h2>
+        <p class="panel-hint">Enter the customer's order history to find their segment.</p>
+
+        <form id="predict-form" novalidate>
+          <div class="field-grid">
+            <div class="field">
+              <label for="total-orders">Total orders</label>
+              <input
+                type="number"
+                id="total-orders"
+                name="Total_Orders"
+                min="0"
+                step="1"
+                inputmode="numeric"
+                placeholder="e.g. 12"
+                aria-describedby="total-orders-error"
+                required
+              />
+              <span class="field-error" id="total-orders-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="avg-order-value">Average order value</label>
+              <input
+                type="number"
+                id="avg-order-value"
+                name="Avg_Order_Value"
+                min="0"
+                step="0.01"
+                inputmode="decimal"
+                placeholder="e.g. 1500"
+                aria-describedby="avg-order-value-error"
+                required
+              />
+              <span class="field-error" id="avg-order-value-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="total-quantity">Total quantity</label>
+              <input
+                type="number"
+                id="total-quantity"
+                name="Total_Quantity"
+                min="0"
+                step="1"
+                inputmode="numeric"
+                placeholder="e.g. 25"
+                aria-describedby="total-quantity-error"
+                required
+              />
+              <span class="field-error" id="total-quantity-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="recency">Recency (days)</label>
+              <input
+                type="number"
+                id="recency"
+                name="Recency"
+                min="0"
+                step="1"
+                inputmode="numeric"
+                placeholder="e.g. 30"
+                aria-describedby="recency-error"
+                required
+              />
+              <span class="field-error" id="recency-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="total-spending">Total spending</label>
+              <input
+                type="number"
+                id="total-spending"
+                name="Total_Spending"
+                min="0"
+                step="0.01"
+                inputmode="decimal"
+                placeholder="e.g. 15000"
+                aria-describedby="total-spending-error"
+                required
+              />
+              <span class="field-error" id="total-spending-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="avg-discount">Average discount (%)</label>
+              <input
+                type="number"
+                id="avg-discount"
+                name="Avg_Discount"
+                min="0"
+                max="100"
+                step="0.1"
+                inputmode="decimal"
+                placeholder="e.g. 10"
+                aria-describedby="avg-discount-error"
+                required
+              />
+              <span class="field-error" id="avg-discount-error" role="alert"></span>
+            </div>
+          </div>
+
+          <p class="form-error" id="form-error" role="alert" hidden></p>
+
+          <div class="form-actions">
+            <button type="submit" id="predict-btn" class="btn btn-primary">
+              <span class="btn-spinner" aria-hidden="true"></span>
+              <span class="btn-label">Predict customer segment</span>
+            </button>
+            <button type="button" id="reset-btn" class="btn btn-ghost">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel result-panel" aria-live="polite" aria-labelledby="result-heading">
+        <h2 id="result-heading" class="visually-hidden">Prediction result</h2>
+
+        <div class="result-empty" id="result-empty">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+            <circle cx="26" cy="26" r="24.5" stroke="currentColor" stroke-width="1.3" stroke-dasharray="3 5" />
+            <path d="M18 30L23 25L28 29L34 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <p class="result-empty-title">No prediction yet</p>
+          <p class="result-empty-text">Fill in the customer's data and predict to see their segment here.</p>
+        </div>
+
+        <div class="result-card" id="result-card" hidden data-cluster="">
+          <div class="result-icon" id="result-icon" aria-hidden="true"></div>
+          <p class="result-eyebrow">Customer segment</p>
+          <h3 class="result-segment" id="result-segment">—</h3>
+          <p class="result-cluster">Cluster <span id="result-cluster-number">—</span></p>
+          <p class="result-description" id="result-description"></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
